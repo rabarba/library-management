@@ -6,13 +6,18 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "build": "tsc",
+    "migration:generate": "npm run typeorm migration:generate -- -d src/data-source.ts",
+    "migration:run": "npm run typeorm migration:run -- -d src/data-source.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "pg": "^8.14.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.21"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
