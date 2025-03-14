@@ -20,5 +20,8 @@ else
   echo "Database already exists."
 fi
 
+echo "Running database migrations..."
+npm run migration:run
+
 echo "Starting server..."
 npm run start
