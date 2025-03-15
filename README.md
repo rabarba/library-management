@@ -1,4 +1,5 @@
 # Library Management
+
 ### How to Run
 
 1. Clone the repository:
@@ -17,8 +18,15 @@
   ```sh
   docker compose up
   ```
-5. The `docker compose` command will run the `init-script.sh` file, which will create a PostgreSQL database if it does not already exist and run the migration files.
+5. The `docker compose` command will:
+   - Run the `init-script.sh` file, which will create a PostgreSQL database if it does not already exist and run the migration files.
+   - Pull Redis (for caching) and pgAdmin (for database management) images.
 
-6. Go to `http://localhost:3000` to see the application running.
+6. App will be ready once you see:
+  ```sh
+  ✅ Database connected successfully! | 🚀 Server is running on port 3000
+  ```
+   - ✅ Database connected successfully!
+   - 🚀 Server is running on port 3000
 
 7. You can test the application using the provided Postman collection.
