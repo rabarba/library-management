@@ -4,7 +4,7 @@ import { AppDataSource } from "../data-source";
 import { User } from "../entity/UserEntity";
 import { HttpException } from "../exceptions/HttpException";
 import { HttpStatus } from "../enums/HttpStatus";
-import { PastBooksType, PresentBooksType, UserWithBooks } from "../types/UserWithBooksType";
+import { BooksType, UserWithBooks } from "../types/UserWithBooksType";
 
 @injectable()
 export class UserService {
@@ -31,8 +31,8 @@ export class UserService {
     });
     if (!user) throw new HttpException(HttpStatus.NOT_FOUND, 'User Not Found');
 
-    const pastBooks: PastBooksType[] = [];
-    const presentBooks: PresentBooksType[] = [];
+    const pastBooks: BooksType[] = [];
+    const presentBooks: BooksType[] = [];
     const userBooks = user.userBooks ?? [];
 
     userBooks.map(userBook => {

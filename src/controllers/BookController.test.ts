@@ -5,7 +5,7 @@ import { HttpStatus } from "../enums/HttpStatus";
 import { HttpException } from "../exceptions/HttpException";
 
 const mockBookService = {
-  getBook: jest.fn(),
+  getBookWithRatings: jest.fn(),
   getBooks: jest.fn(),
   createBook: jest.fn(),
 };
@@ -43,7 +43,7 @@ describe("BookController", () => {
 
     it("should return 404 if book not found", async () => {
       mockRequest = { params: { id: "1" } };
-      mockBookService.getBook.mockRejectedValue(new HttpException(HttpStatus.NOT_FOUND, 'Book not found'));
+      mockBookService.getBookWithRatings.mockRejectedValue(new HttpException(HttpStatus.NOT_FOUND, 'Book not found'));
 
       await bookController.getBook(mockRequest as Request, mockResponse as Response);
 
@@ -53,8 +53,8 @@ describe("BookController", () => {
 
     it("should return book with 200 status", async () => {
       mockRequest = { params: { id: "1" } };
-      const mockBook = { id: 1, title: "Book Title" };
-      mockBookService.getBook.mockResolvedValue(mockBook);
+      const mockBook = { id: 1, name: "Book Title", score: -1};
+      mockBookService.getBookWithRatings.mockResolvedValue(mockBook);
 
       await bookController.getBook(mockRequest as Request, mockResponse as Response);
 
@@ -65,7 +65,7 @@ describe("BookController", () => {
 
   describe("getBooks", () => {
     it("should return books with status 200", async () => {
-      const mockBooks = [{ id: 1, title: "Book 1" }, { id: 2, title: "Book 2" }];
+      const mockBooks = [{ id: 1, name: "Book 1" }, { id: 2, name: "Book 2" }];
       mockBookService.getBooks.mockResolvedValue(mockBooks);
 
       await bookController.getBooks(mockRequest as Request, mockResponse as Response);
@@ -87,12 +87,12 @@ describe("BookController", () => {
 
   describe("createBook", () => {
     it("should create book and return 201", async () => {
-      mockRequest = { body: { title: "New Book" } };
+      mockRequest = { body: { name: "New Book" } };
       mockBookService.createBook.mockResolvedValue(1);
 
       await bookController.createBook(mockRequest as Request, mockResponse as Response);
 
-      expect(mockBookService.createBook).toHaveBeenCalledWith({ title: "New Book" });
+      expect(mockBookService.createBook).toHaveBeenCalledWith({ name: "New Book" });
       expect(statusMock).toHaveBeenCalledWith(HttpStatus.CREATED);
       expect(jsonMock).toHaveBeenCalledWith(1);
     });

@@ -16,7 +16,7 @@ export class BookController {
         return;
       }
 
-      const books = await this.bookService.getBook(parseInt(req.params.id));
+      const books = await this.bookService.getBookWithRatings(parseInt(req.params.id));
       res.status(HttpStatus.OK).json(books);
     } catch (error: any) {
       res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});

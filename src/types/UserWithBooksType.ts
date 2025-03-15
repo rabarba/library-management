@@ -2,16 +2,12 @@ export type UserWithBooks = {
   id: number,
   name: string,
   books: {
-    past: PastBooksType[],
-    present: PresentBooksType[]
+    past: BooksType[],
+    present: BooksType[]
   }
 }
 
-export type PastBooksType = {
+export type BooksType = {
   name: string,
-  userScore: number
-}
-
-export type PresentBooksType = {
-  name: string
+  userScore?: number
 }
