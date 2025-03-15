@@ -15,7 +15,7 @@
   ```
 4. Build and start the application using Docker Compose:
   ```sh
-  docker-compose up --build
+  docker-compose up
   ```
 5. The `docker-compose` command will run the `init-script.sh` file, which will create a PostgreSQL database if it does not already exist and run the migration files.
 
