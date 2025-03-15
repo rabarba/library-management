@@ -17,6 +17,7 @@
   "dependencies": {
     "express": "^4.21.2",
     "inversify": "^7.1.0",
+    "joi": "^17.13.3",
     "pg": "^8.14.0",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.21"
