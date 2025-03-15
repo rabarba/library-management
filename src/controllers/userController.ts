@@ -3,6 +3,7 @@ import { injectable, inject } from "inversify";
 import { UserService } from "../services/UserService";
 import { UserBookService } from "../services/UserBookService";
 import { createUserValidation, getUserValidation } from "../validations/userValidation";
+import { HttpStatus } from "../enums/HttpStatus";
 
 @injectable()
 export class UserController {
@@ -14,9 +15,9 @@ export class UserController {
   getUsers = async (_: Request, res: Response) => {
     try {
       const users = await this.userService.getUsers();
-      res.status(200).json(users);
-    } catch (error) {
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(HttpStatus.OK).json(users);
+    } catch (error: any) {
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal Server Error' });
     }
   };
 
@@ -24,25 +25,40 @@ export class UserController {
     try {
       const { error } = createUserValidation.validate(req.body);
       if (error) {
-        res.status(400).json({ message: error.details.map(detail => detail.message) });
+        res.status(HttpStatus.BAD_REQUEST).json({ message: error.details.map(detail => detail.message) });
         return;
       }
 
       const userId = await this.userService.createUser(req.body);
-      res.status(201).json(userId);
-      
+      res.status(HttpStatus.CREATED).json(userId);
+
     } catch (error: any) {
-      res.status(error.status || 500).json({ message: error.message || 'Internal Server Error' });
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal Server Error' });
     }
   }
+
+  getUser = async (req: Request, res: Response) => {
+    try {
+      const { error } = getUserValidation.validate(req.params);
+      if (error) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: error.details.map(detail => detail.message) });
+        return;
+      }
+
+      const users = await this.userService.getUser(parseInt(req.params.id));
+      res.status(HttpStatus.OK).json(users);
+    } catch (error: any) {
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal Server Error' });
+    }
+  };
 
   borrowBook = async (req: Request, res: Response) => {
     try {
       const { userId, bookId } = req.params;
       await this.userBookService.borrowBook(parseInt(userId), parseInt(bookId));
-      res.status(201).json();
+      res.status(HttpStatus.CREATED).json();
     } catch (error: any) {
-      res.status(error.status || 500).json({ message: error.message || 'Internal Server Error' });
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal Server Error' });
     }
   }
 }
