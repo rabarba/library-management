@@ -8,6 +8,7 @@ import { HttpException } from "../exceptions/HttpException";
 import { HttpStatus } from "../enums/HttpStatus";
 import { User } from "../entity/UserEntity";
 import { Book } from "../entity/BookEntity";
+import { CacheService } from "./CacheService";
 
 @injectable()
 export class UserBookService {
@@ -15,7 +16,8 @@ export class UserBookService {
 
   constructor(
     @inject(UserService) private userService: UserService,
-    @inject(BookService) private bookService: BookService) {
+    @inject(BookService) private bookService: BookService,
+    @inject(CacheService) private cacheService: CacheService) {
     this.userBookRepository = AppDataSource.getRepository(UserBook);
   }
 
@@ -35,9 +37,10 @@ export class UserBookService {
     const newUserBook = this.userBookRepository.create({ user, book });
     await Promise.all([
       this.userBookRepository.save(newUserBook),
-      this.bookService.setBookUnavailable(book)
+      this.bookService.setBookUnavailable(book),
+      this.cacheService.deleteDataFromCache('user', userId)
     ]);
-   
+
   }
 
   async returnBook(userId: number, bookId: number, score: number): Promise<void> {
@@ -51,7 +54,8 @@ export class UserBookService {
 
     await Promise.all([
       this.userBookRepository.save(userBook),
-      this.bookService.setBookAvailable(book)
+      this.bookService.setBookAvailable(book),
+      this.cacheService.deleteDataFromCache('user', userId)
     ])
   }
 }

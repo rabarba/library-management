@@ -1,16 +1,17 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../dataSource";
 import { User } from "../entity/UserEntity";
 import { HttpException } from "../exceptions/HttpException";
 import { HttpStatus } from "../enums/HttpStatus";
 import { BooksType, UserWithBooks } from "../types/UserWithBooksType";
+import { CacheService } from "./CacheService";
 
 @injectable()
 export class UserService {
   private userRepository: Repository<User>;
 
-  constructor() {
+  constructor(@inject(CacheService) private cacheService: CacheService) {
     this.userRepository = AppDataSource.getRepository(User);
   }
 
@@ -25,6 +26,12 @@ export class UserService {
   }
 
   async getUserWithBooks(userId: number): Promise<UserWithBooks> {
+    const cachedData = await this.cacheService.getDataFromCache('user', userId);
+    if (cachedData) {
+      console.log('User returned from cache!')
+      return JSON.parse(cachedData);
+    }
+
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['userBooks', 'userBooks.book']
@@ -39,7 +46,7 @@ export class UserService {
       userBook.score ? pastBooks.push({ name: userBook.book.name, userScore: userBook.score }) : presentBooks.push({ name: userBook.book.name });
     });
 
-    return {
+    const userWithBooks = {
       id: user.id,
       name: user.name,
       books: {
@@ -47,6 +54,10 @@ export class UserService {
         present: presentBooks
       }
     };
+
+    await this.cacheService.setDataToCache('user', userId, userWithBooks);
+    console.log("User saved to cache");
+    return userWithBooks;
   }
 
   async createUser(userData: Partial<User>): Promise<number> {
