@@ -9,7 +9,7 @@ import { CacheService } from "./CacheService";
 
 @injectable()
 export class BookService {
-  private bookRepository: Repository<Book>;
+  bookRepository: Repository<Book>;
 
   constructor(@inject(CacheService) private cacheService: CacheService) {
     this.bookRepository = AppDataSource.getRepository(Book);

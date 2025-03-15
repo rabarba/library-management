@@ -12,7 +12,7 @@ import { CacheService } from "./CacheService";
 
 @injectable()
 export class UserBookService {
-  private userBookRepository: Repository<UserBook>;
+  userBookRepository: Repository<UserBook>;
 
   constructor(
     @inject(UserService) private userService: UserService,
