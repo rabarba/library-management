@@ -26,7 +26,4 @@
   ```sh
   ✅ Database connected successfully! | 🚀 Server is running on port 3000
   ```
-   - ✅ Database connected successfully!
-   - 🚀 Server is running on port 3000
-
 7. You can test the application using the provided Postman collection.
