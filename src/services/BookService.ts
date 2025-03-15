@@ -2,6 +2,8 @@ import { injectable } from "inversify";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entity/BookEntity";
+import { HttpException } from "../exceptions/HttpException";
+import { HttpStatus } from "../enums/HttpStatus";
 
 @injectable()
 export class BookService {
@@ -15,8 +17,10 @@ export class BookService {
     return this.bookRepository.find();
   }
 
-  async getBook(bookId: number): Promise<Book | null> {
-    return this.bookRepository.findOneBy({ id: bookId });
+  async getBook(bookId: number): Promise<Book> {
+    const book = await this.bookRepository.findOneBy({ id: bookId });
+    if (!book) throw new HttpException(HttpStatus.NOT_FOUND, 'Book Not Found');
+    return book;
   }
 
   async createBook(bookData: Partial<Book>): Promise<number> {
