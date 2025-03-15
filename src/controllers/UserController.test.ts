@@ -8,7 +8,7 @@ import { HttpException } from "../exceptions/HttpException";
 const mockUserService = {
   getUsers: jest.fn(),
   createUser: jest.fn(),
-  getUser: jest.fn(),
+  getUserWithBooks: jest.fn(),
 };
 
 const mockUserBookService = {
@@ -93,7 +93,7 @@ describe("UserController", () => {
 
     it("should return 404 if user not found", async () => {
       mockRequest = { params: { id: "1" } };
-      mockUserService.getUser.mockRejectedValue(new HttpException(HttpStatus.NOT_FOUND, 'User not found'));
+      mockUserService.getUserWithBooks.mockRejectedValue(new HttpException(HttpStatus.NOT_FOUND, 'User not found'));
 
       await userController.getUser(mockRequest as Request, mockResponse as Response);
 
@@ -101,10 +101,10 @@ describe("UserController", () => {
       expect(jsonMock).toHaveBeenCalledWith({ message: "User not found" });
     });
 
-    it("should return user with 200 status", async () => {
+    it("should return user with books and 200 status", async () => {
       mockRequest = { params: { id: "1" } };
-      const mockUser = { id: 1, name: "Alice" };
-      mockUserService.getUser.mockResolvedValue(mockUser);
+      const mockUser = { id: 1, name: "Alice", "books": { past: [], present: [] } };
+      mockUserService.getUserWithBooks.mockResolvedValue(mockUser);
 
       await userController.getUser(mockRequest as Request, mockResponse as Response);
 

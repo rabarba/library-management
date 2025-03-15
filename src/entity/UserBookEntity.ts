@@ -16,5 +16,5 @@ export class UserBook {
   book: Book;
 
   @Column({ type: 'smallint', nullable: true })
-  score: string;
+  score: number;
 }

@@ -45,7 +45,7 @@ export class UserController {
         return;
       }
 
-      const users = await this.userService.getUser(parseInt(req.params.id));
+      const users = await this.userService.getUserWithBooks(parseInt(req.params.id));
       res.status(HttpStatus.OK).json(users);
     } catch (error: any) {
       res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});

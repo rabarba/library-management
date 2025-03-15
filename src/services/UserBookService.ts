@@ -18,8 +18,8 @@ export class UserBookService {
   }
 
   async borrowBook(userId: number, bookId: number): Promise<void> {
-    const user = (await this.userService.getUser(userId)) as User;
-    const book = (await this.bookService.getBook(bookId)) as Book;
+    const user = await this.userService.getUser(userId);
+    const book = await this.bookService.getBook(bookId);
 
     const userBook = this.userBookRepository.create({ user, book });
     await this.userBookRepository.save(userBook);
