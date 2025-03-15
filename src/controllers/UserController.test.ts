@@ -156,7 +156,7 @@ describe("UserController", () => {
     });
 
     it("should return 400 if score is invalid", async () => {
-      mockRequest = { params: { userId: "1", bookId: "1" }, body: { score: 2} };
+      mockRequest = { params: { userId: "1", bookId: "1" }, body: { score: "2c"} };
 
       await userController.returnBook(mockRequest as Request, mockResponse as Response);
 
