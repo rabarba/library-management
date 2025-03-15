@@ -1,10 +1,12 @@
 import { inject, injectable } from "inversify";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
-import { User } from "../entity/UserEntity";
 import { UserBook } from "../entity/UserBookEntity";
 import { UserService } from "./UserService";
 import { BookService } from "./BookService";
+import { HttpException } from "../exceptions/HttpException";
+import { HttpStatus } from "../enums/HttpStatus";
+import { User } from "../entity/UserEntity";
 import { Book } from "../entity/BookEntity";
 
 @injectable()
@@ -17,11 +19,39 @@ export class UserBookService {
     this.userBookRepository = AppDataSource.getRepository(UserBook);
   }
 
-  async borrowBook(userId: number, bookId: number): Promise<void> {
-    const user = await this.userService.getUser(userId);
-    const book = await this.bookService.getBook(bookId);
+  async getUserPresentBook(user: User, book: Book): Promise<UserBook> {
+    const userBook = await this.userBookRepository.findOneBy({ user, book, score: undefined });
+    if (!userBook) throw new HttpException(HttpStatus.NOT_FOUND, 'User Book Not Found');
 
-    const userBook = this.userBookRepository.create({ user, book });
-    await this.userBookRepository.save(userBook);
+    return userBook;
+  }
+
+  async borrowBook(userId: number, bookId: number): Promise<void> {
+    const [user, book] = await Promise.all([
+      this.userService.getUser(userId),
+      this.bookService.isBookAvailable(bookId),
+    ]);
+
+    const newUserBook = this.userBookRepository.create({ user, book });
+    await Promise.all([
+      this.userBookRepository.save(newUserBook),
+      this.bookService.setBookUnavailable(book)
+    ]);
+   
+  }
+
+  async returnBook(userId: number, bookId: number, score: number): Promise<void> {
+    const [user, book] = await Promise.all([
+      this.userService.getUser(userId),
+      this.bookService.getBook(bookId),
+    ]);
+
+    const userBook = await this.getUserPresentBook(user, book);
+    userBook.score = score;
+
+    await Promise.all([
+      this.userBookRepository.save(userBook),
+      this.bookService.setBookAvailable(book)
+    ])
   }
 }

@@ -9,5 +9,6 @@ router.get("/:id", (req, res) => { userController.getUser(req, res) });
 router.get("/", userController.getUsers);
 router.post("/", userController.createUser);
 router.post("/:userId/borrow/:bookId", (req, res) => { userController.borrowBook(req, res); });
+router.post("/:userId/return/:bookId", (req, res) => { userController.returnBook(req, res); });
 
 export default router;

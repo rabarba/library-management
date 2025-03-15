@@ -10,6 +10,9 @@ export class Book {
   @Column()
   name: string;
 
+  @Column({ default: true })
+  isAvailable: boolean;
+
   @OneToMany(() => UserBook, (userBook) => userBook.book)
   userBooks: UserBook[];
 }

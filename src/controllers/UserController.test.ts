@@ -13,6 +13,7 @@ const mockUserService = {
 
 const mockUserBookService = {
   borrowBook: jest.fn(),
+  returnBook: jest.fn()
 };
 
 const userController = new UserController(
@@ -121,6 +122,45 @@ describe("UserController", () => {
 
       expect(mockUserBookService.borrowBook).toHaveBeenCalledWith(1, 10);
       expect(statusMock).toHaveBeenCalledWith(HttpStatus.CREATED);
+      expect(jsonMock).toHaveBeenCalled();
+    });
+
+    it("should return 400 if userId or bookId are invalid", async () => {
+      mockRequest = { params: { userId: "1c", bookId: "10a" } };
+
+      await userController.borrowBook(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(jsonMock).toHaveBeenCalled();
+    });
+  });
+
+  describe("returnBook", () => {
+    it("should return 201 when book is returned", async () => {
+      mockRequest = { params: { userId: "1", bookId: "1" }, body: { score: "4" } };
+
+      await userController.returnBook(mockRequest as Request, mockResponse as Response);
+
+      expect(mockUserBookService.returnBook).toHaveBeenCalledWith(1, 1, 4);
+      expect(statusMock).toHaveBeenCalledWith(HttpStatus.CREATED);
+      expect(jsonMock).toHaveBeenCalled();
+    });
+
+    it("should return 400 if userId or bookId are invalid", async () => {
+      mockRequest = { params: { userId: "1", bookId: "1c" }, body: { score: "4" } };
+
+      await userController.returnBook(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
+      expect(jsonMock).toHaveBeenCalled();
+    });
+
+    it("should return 400 if score is invalid", async () => {
+      mockRequest = { params: { userId: "1", bookId: "1" } };
+
+      await userController.returnBook(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
       expect(jsonMock).toHaveBeenCalled();
     });
   });

@@ -23,6 +23,22 @@ export class BookService {
     return book;
   }
 
+  async isBookAvailable(bookId: number): Promise<Book>{
+    const book = await this.bookRepository.findOneBy({ id: bookId, isAvailable: true });
+    if (!book) throw new HttpException(HttpStatus.BAD_REQUEST, 'Book is not available');
+    return book;
+  }
+
+  async setBookAvailable(book: Book): Promise<void>{
+    book.isAvailable = true;
+    await this.bookRepository.save(book);
+  }
+
+  async setBookUnavailable(book: Book): Promise<void>{
+    book.isAvailable = false;
+    await this.bookRepository.save(book);
+  }
+
   async createBook(bookData: Partial<Book>): Promise<number> {
     const user = this.bookRepository.create(bookData);
     return (await this.bookRepository.save(user)).id;

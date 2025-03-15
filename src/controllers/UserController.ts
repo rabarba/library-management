@@ -4,6 +4,7 @@ import { UserService } from "../services/UserService";
 import { UserBookService } from "../services/UserBookService";
 import { createUserValidation, getUserValidation } from "../validations/userValidation";
 import { HttpStatus } from "../enums/HttpStatus";
+import { borrowBookValidation, returnBookValidation } from "../validations/userBookValidation";
 
 @injectable()
 export class UserController {
@@ -33,7 +34,7 @@ export class UserController {
       res.status(HttpStatus.CREATED).json(userId);
 
     } catch (error: any) {
-      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
   }
 
@@ -48,17 +49,40 @@ export class UserController {
       const users = await this.userService.getUserWithBooks(parseInt(req.params.id));
       res.status(HttpStatus.OK).json(users);
     } catch (error: any) {
-      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
   };
 
   borrowBook = async (req: Request, res: Response) => {
     try {
+      const { error } = borrowBookValidation.validate(req.params);
+      if (error) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: error.details.map(detail => detail.message) });
+        return;
+      }
+
       const { userId, bookId } = req.params;
       await this.userBookService.borrowBook(parseInt(userId), parseInt(bookId));
       res.status(HttpStatus.CREATED).json();
     } catch (error: any) {
-      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
+    }
+  }
+
+  returnBook = async (req: Request, res: Response) => {
+    try {
+      const { error } = returnBookValidation.validate({ ...req.params, ...req.body });
+      if (error) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: error.details.map(detail => detail.message) });
+        return;
+      }
+
+      const { userId, bookId } = req.params;
+      const { score } = req.body;
+      await this.userBookService.returnBook(parseInt(userId), parseInt(bookId), parseInt(score));
+      res.status(HttpStatus.CREATED).json();
+    } catch (error: any) {
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
   }
 }
