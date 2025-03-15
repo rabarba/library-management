@@ -1,16 +1,17 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import { Repository } from "typeorm";
 import { AppDataSource } from "../dataSource";
 import { Book } from "../entity/BookEntity";
 import { HttpException } from "../exceptions/HttpException";
 import { HttpStatus } from "../enums/HttpStatus";
 import { BookWithRatingsType } from "../types/BookWithRatingsType";
+import { CacheService } from "./CacheService";
 
 @injectable()
 export class BookService {
   private bookRepository: Repository<Book>;
 
-  constructor() {
+  constructor(@inject(CacheService) private cacheService: CacheService) {
     this.bookRepository = AppDataSource.getRepository(Book);
   }
 
@@ -25,6 +26,12 @@ export class BookService {
   }
 
   async getBookWithRatings(bookId: number): Promise<BookWithRatingsType> {
+    const cachedData = await this.cacheService.getDataFromCache('book', bookId);
+    if (cachedData) {
+      console.log('Book returned from cache!')
+      return JSON.parse(cachedData);
+    }
+
     const book = await this.bookRepository.findOne({
       where: { id: bookId },
       relations: ['userBooks']
@@ -42,11 +49,16 @@ export class BookService {
       avgScore = Math.round(avgScore * 100) / 100;
     }
 
-    return {
+    const bookWithRatings =  {
       id: book.id,
       name: book.name,
       score: avgScore
-    }
+    };
+
+    await this.cacheService.setDataToCache('book', bookId, bookWithRatings);
+    console.log("Book saved to cache");
+
+    return bookWithRatings;
   }
 
   async isBookAvailable(bookId: number): Promise<Book> {

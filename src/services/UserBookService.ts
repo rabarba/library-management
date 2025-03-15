@@ -55,7 +55,8 @@ export class UserBookService {
     await Promise.all([
       this.userBookRepository.save(userBook),
       this.bookService.setBookAvailable(book),
-      this.cacheService.deleteDataFromCache('user', userId)
+      this.cacheService.deleteDataFromCache('user', userId),
+      this.cacheService.deleteDataFromCache('book', bookId)
     ])
   }
 }
