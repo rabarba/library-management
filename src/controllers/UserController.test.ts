@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserController } from "../controllers/UserController";
+import { UserController } from "./UserController";
 import { UserService } from "../services/UserService";
 import { UserBookService } from "../services/UserBookService";
 import { HttpStatus } from "../enums/HttpStatus";
