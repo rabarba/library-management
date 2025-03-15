@@ -15,6 +15,10 @@ export class BookService {
     return this.bookRepository.find();
   }
 
+  async getBook(bookId: number): Promise<Book | null> {
+    return this.bookRepository.findOneBy({ id: bookId });
+  }
+
   async createBook(bookData: Partial<Book>): Promise<number> {
     const user = this.bookRepository.create(bookData);
     return (await this.bookRepository.save(user)).id;

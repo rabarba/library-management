@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { User } from './UserEntity';
+import { UserBook } from './UserBookEntity';
 
 @Entity()
 export class Book {
@@ -9,6 +10,6 @@ export class Book {
   @Column()
   name: string;
 
-  @ManyToMany(() => User)
-  users: User[];
+  @OneToMany(() => UserBook, (userBook) => userBook.book)
+  userBooks: UserBook[];
 }
