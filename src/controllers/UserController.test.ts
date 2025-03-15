@@ -137,17 +137,17 @@ describe("UserController", () => {
 
   describe("returnBook", () => {
     it("should return 201 when book is returned", async () => {
-      mockRequest = { params: { userId: "1", bookId: "1" }, body: { score: "4" } };
+      mockRequest = { params: { userId: "1", bookId: "1" }, body: { score: 3} };
 
       await userController.returnBook(mockRequest as Request, mockResponse as Response);
 
-      expect(mockUserBookService.returnBook).toHaveBeenCalledWith(1, 1, 4);
+      expect(mockUserBookService.returnBook).toHaveBeenCalledWith(1, 1, 3);
       expect(statusMock).toHaveBeenCalledWith(HttpStatus.CREATED);
       expect(jsonMock).toHaveBeenCalled();
     });
 
     it("should return 400 if userId or bookId are invalid", async () => {
-      mockRequest = { params: { userId: "1", bookId: "1c" }, body: { score: "4" } };
+      mockRequest = { params: { userId: "1", bookId: "1c" }, body: { score: 5 } };
 
       await userController.returnBook(mockRequest as Request, mockResponse as Response);
 
@@ -156,7 +156,7 @@ describe("UserController", () => {
     });
 
     it("should return 400 if score is invalid", async () => {
-      mockRequest = { params: { userId: "1", bookId: "1" } };
+      mockRequest = { params: { userId: "1", bookId: "1" }, body: { score: 2} };
 
       await userController.returnBook(mockRequest as Request, mockResponse as Response);
 

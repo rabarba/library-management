@@ -71,6 +71,7 @@ export class UserController {
 
   returnBook = async (req: Request, res: Response) => {
     try {
+      console.log(JSON.stringify(req.body));
       const { error } = returnBookValidation.validate({ ...req.params, ...req.body });
       if (error) {
         res.status(HttpStatus.BAD_REQUEST).json({ message: error.details.map(detail => detail.message) });

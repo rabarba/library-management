@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { Repository } from "typeorm";
+import { IsNull, Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { UserBook } from "../entity/UserBookEntity";
 import { UserService } from "./UserService";
@@ -20,7 +20,7 @@ export class UserBookService {
   }
 
   async getUserPresentBook(user: User, book: Book): Promise<UserBook> {
-    const userBook = await this.userBookRepository.findOneBy({ user, book, score: undefined });
+    const userBook = await this.userBookRepository.findOneBy({ user, book, score: IsNull() });
     if (!userBook) throw new HttpException(HttpStatus.NOT_FOUND, 'User Book Not Found');
 
     return userBook;
