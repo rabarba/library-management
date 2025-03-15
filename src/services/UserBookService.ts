@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { IsNull, Repository } from "typeorm";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../dataSource";
 import { UserBook } from "../entity/UserBookEntity";
 import { UserService } from "./UserService";
 import { BookService } from "./BookService";

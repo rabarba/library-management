@@ -1,6 +1,6 @@
 import express from 'express';
 import userRoutes from './routes/userRoutes';
-import { AppDataSource } from './data-source';
+import { AppDataSource } from './dataSource';
 import bookRoutes from './routes/bookRoutes';
 
 const app = express();

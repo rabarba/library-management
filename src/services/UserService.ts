@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { Repository } from "typeorm";
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../dataSource";
 import { User } from "../entity/UserEntity";
 import { HttpException } from "../exceptions/HttpException";
 import { HttpStatus } from "../enums/HttpStatus";
