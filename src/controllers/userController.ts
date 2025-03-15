@@ -33,7 +33,7 @@ export class UserController {
       res.status(HttpStatus.CREATED).json(userId);
 
     } catch (error: any) {
-      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal Server Error' });
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});
     }
   }
 
@@ -48,7 +48,7 @@ export class UserController {
       const users = await this.userService.getUser(parseInt(req.params.id));
       res.status(HttpStatus.OK).json(users);
     } catch (error: any) {
-      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal Server Error' });
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});
     }
   };
 
@@ -58,7 +58,7 @@ export class UserController {
       await this.userBookService.borrowBook(parseInt(userId), parseInt(bookId));
       res.status(HttpStatus.CREATED).json();
     } catch (error: any) {
-      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal Server Error' });
+      res.status(error.status || HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message});
     }
   }
 }
