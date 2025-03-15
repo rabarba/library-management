@@ -20,6 +20,9 @@ else
   echo "Database already exists."
 fi
 
+echo "Generating database migrations..."
+npm run migration:generate src/migrations/libraryManagement
+
 echo "Running database migrations..."
 npm run migration:run
 
